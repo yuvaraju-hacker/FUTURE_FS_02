@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LeadFlow CRM</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fb;
+    --bg-tertiary: #f1f3f7;
+    --text-primary: #111827;
+    --text-secondary: #6b7280;
+    --text-tertiary: #9ca3af;
+    --border: #e5e7eb;
+    --border-hover: #d1d5db;
+    --accent: #1a56db;
+    --accent-light: #e8f0fe;
+    --accent-hover: #1548c2;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --sidebar-w: 224px;
+    --header-h: 56px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,.07);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.10);
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    font-size: 14px;
+    line-height: 1.5;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── APP SHELL ── */
+  .app { display: flex; height: 100vh; }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    background: var(--bg-primary);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .sidebar-logo {
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-mark {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px;
+  }
+  .logo-text { font-size: 15px; font-weight: 600; letter-spacing: -0.3px; }
+  .nav { padding: 10px; flex: 1; overflow-y: auto; }
+  .nav-section {
+    font-size: 10.5px; font-weight: 600; color: var(--text-tertiary);
+    text-transform: uppercase; letter-spacing: .8px;
+    padding: 12px 8px 4px;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 8px 10px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px; color: var(--text-secondary);
+    cursor: pointer; transition: all .14s;
+    user-select: none; margin-bottom: 2px;
+  }
+  .nav-item:hover { background: var(--bg-secondary); color: var(--text-primary); }
+  .nav-item.active { background: var(--accent-light); color: var(--accent); font-weight: 600; }
+  .nav-item i { font-size: 17px; flex-shrink: 0; }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--accent); color: #fff;
+    font-size: 10px; font-weight: 600;
+    padding: 1px 6px; border-radius: 10px;
+  }
+  .sidebar-footer {
+    padding: 10px 12px;
+    border-top: 1px solid var(--border);
+  }
+  .user-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 8px; border-radius: var(--radius-md); cursor: pointer;
+  }
+  .user-row:hover { background: var(--bg-secondary); }
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--accent-light); color: var(--accent);
+    font-size: 12px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .avatar-sm { width: 26px; height: 26px; font-size: 10px; }
+  .user-info { flex: 1; min-width: 0; }
+  .user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-role { font-size: 11px; color: var(--text-tertiary); }
+
+  /* ── MAIN AREA ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+  .topbar {
+    height: var(--header-h);
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center;
+    padding: 0 20px; gap: 10px;
+    flex-shrink: 0;
+  }
+  .page-title { font-size: 16px; font-weight: 600; flex: 1; }
+  .search-wrap { position: relative; flex: 1; max-width: 300px; }
+  .search-wrap input {
+    width: 100%; padding: 7px 12px 7px 34px;
+    border: 1px solid var(--border); border-radius: var(--radius-md);
+    font-size: 13px; background: var(--bg-secondary);
+    outline: none; color: var(--text-primary);
+    transition: border-color .15s, background .15s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); background: #fff; }
+  .search-wrap i { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--text-tertiary); }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; border-radius: var(--radius-md);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border: none; font-family: inherit; transition: all .14s;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--text-primary); }
+  .btn-secondary:hover { background: var(--bg-secondary); }
+  .btn-danger { background: transparent; border: 1px solid #fca5a5; color: #dc2626; }
+  .btn-danger:hover { background: #fee2e2; }
+  .btn-sm { padding: 5px 10px; font-size: 12px; }
+
+  .content { flex: 1; overflow-y: auto; padding: 20px; }
+
+  /* ── VIEWS ── */
+  .view { display: none; }
+  .view.active { display: block; }
+
+  /* ── STATS GRID ── */
+  .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-card {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 18px;
+  }
+  .stat-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; margin-bottom: 10px;
+  }
+  .stat-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 4px; }
+  .stat-val { font-size: 26px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+  .stat-sub { font-size: 11.5px; color: var(--text-tertiary); margin-top: 4px; }
+  .stat-up { color: #059669; }
+
+  /* ── PANELS ── */
+  .panels { display: grid; grid-template-columns: 1fr 320px; gap: 12px; }
+  .panel {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .panel-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .panel-title { font-size: 13.5px; font-weight: 600; }
+  .panel-link { font-size: 12px; color: var(--accent); cursor: pointer; background: none; border: none; font-family: inherit; padding: 4px 8px; border-radius: var(--radius-sm); }
+  .panel-link:hover { background: var(--accent-light); }
+
+  /* ── TABLE ── */
+  table { width: 100%; border-collapse: collapse; }
+  .data-table th {
+    font-size: 11.5px; font-weight: 600; color: var(--text-tertiary);
+    text-align: left; padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap; text-transform: uppercase; letter-spacing: .4px;
+  }
+  .data-table td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid var(--border); }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tbody tr:hover td { background: var(--bg-secondary); cursor: pointer; }
+  .lead-name-cell { display: flex; align-items: center; gap: 9px; font-weight: 500; }
+
+  /* ── BADGES ── */
+  .badge {
+    display: inline-flex; align-items: center;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 9px; border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-new       { background: #e8f0fe; color: #1a56db; }
+  .badge-contacted { background: #fef3c7; color: #92400e; }
+  .badge-qualified { background: #d1fae5; color: #065f46; }
+  .badge-converted { background: #ede9fe; color: #4c1d95; }
+  .badge-lost      { background: #fee2e2; color: #991b1b; }
+
+  /* ── SCORE BAR ── */
+  .score-wrap { display: flex; align-items: center; gap: 7px; }
+  .score-bar { width: 56px; height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .score-fill { height: 100%; border-radius: 3px; }
+  .score-high .score-fill { background: #059669; }
+  .score-mid  .score-fill { background: #d97706; }
+  .score-low  .score-fill { background: #dc2626; }
+  .score-num { font-size: 11px; color: var(--text-tertiary); min-width: 20px; }
+
+  /* ── ACTIVITY ── */
+  .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 16px; }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-top: 5px; flex-shrink: 0; }
+  .activity-dot.green { background: #059669; }
+  .activity-dot.amber { background: #d97706; }
+  .activity-dot.red   { background: #dc2626; }
+  .activity-text { font-size: 13px; }
+  .activity-time { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+  /* ── FILTER ROW ── */
+  .filter-row { display: flex; align-items: center; gap: 7px; margin-bottom: 14px; flex-wrap: wrap; }
+  .filter-label { font-size: 12px; color: var(--text-tertiary); margin-right: 2px; }
+  .chip {
+    font-size: 12px; padding: 5px 12px;
+    border-radius: 20px; border: 1px solid var(--border);
+    cursor: pointer; background: var(--bg-primary);
+    color: var(--text-secondary); transition: all .14s;
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .chip.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ── KANBAN ── */
+  .kanban { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; align-items: start; }
+  .kol {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    padding: 10px;
+    border: 1px solid var(--border);
+  }
+  .kol-header {
+    font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .kol-count {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    padding: 1px 6px; border-radius: 8px;
+    font-size: 11px; color: var(--text-tertiary);
+  }
+  .kcard {
+    background: var(--bg-primary); border: 1px solid var(--border);
+    border-radius: var(--radius-md); padding: 10px;
+    margin-bottom: 8px; cursor: pointer; transition: all .14s;
+  }
+  .kcard:hover { border-color: var(--accent); box-shadow: 0 1px 6px rgba(26,86,219,.1); }
+  .kcard:last-child { margin-bottom: 0; }
+  .kcard-name { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .kcard-co   { font-size: 11.5px; color: var(--text-secondary); margin-bottom: 7px; }
+  .kcard-meta { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-tertiary); }
+  .kcard-score { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--accent); }
+
+  /* ── MODAL / DRAWER ── */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(17,24,39,.45);
+    z-index: 200;
+    display: none; align-items: flex-start; justify-content: flex-end;
+  }
+  .overlay.open { display: flex; }
+  .drawer {
+    width: 480px; height: 100%;
+    background: var(--bg-primary);
+    box-shadow: -6px 0 28px rgba(0,0,0,.12);
+    display: flex; flex-direction: column;
+    animation: slideIn .2s ease;
+  }
+  @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  .modal-box {
+    width: 520px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    display: flex; flex-direction: column;
+    animation: fadeUp .18s ease;
+    max-height: 90vh;
+    margin: auto;
+  }
+  .overlay.center { justify-content: center; align-items: center; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+  .drawer-header, .modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+    flex-shrink: 0;
+  }
+  .drawer-title, .modal-title { font-size: 15px; font-weight: 600; flex: 1; }
+  .close-btn {
+    background: none; border: none; cursor: pointer;
+    font-size: 20px; color: var(--text-tertiary);
+    padding: 4px; border-radius: var(--radius-sm); line-height: 1;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .close-btn:hover { color: var(--text-primary); background: var(--bg-secondary); }
+  .drawer-body, .modal-body { flex: 1; overflow-y: auto; padding: 20px; }
+  .drawer-footer, .modal-footer {
+    padding: 14px 20px;
+    border-top: 1px solid var(--border);
+    display: flex; gap: 8px;
+    flex-shrink: 0;
+  }
+
+  /* ── DETAIL DRAWER INTERNALS ── */
+  .detail-hero { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .detail-avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--accent-light); color: var(--accent); font-size: 17px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .detail-name { font-size: 18px; font-weight: 700; letter-spacing: -0.4px; }
+  .detail-co { font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .section-label { font-size: 11px; font-weight: 700; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: .6px; margin-bottom: 10px; }
+  .detail-section { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border); }
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .field-item { display: flex; flex-direction: column; gap: 3px; }
+  .field-item.full { grid-column: 1 / -1; }
+  .field-label { font-size: 11px; font-weight: 600; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: .4px; }
+  .field-val { font-size: 13.5px; color: var(--text-primary); }
+  .field-val a { color: var(--accent); text-decoration: none; }
+  .field-val a:hover { text-decoration: underline; }
+  .msg-box { background: var(--bg-secondary); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 12px 14px; font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+  select.status-sel {
+    appearance: none; padding: 6px 12px;
+    border: 1px solid var(--border); border-radius: var(--radius-md);
+    font-size: 13px; background: var(--bg-secondary);
+    cursor: pointer; color: var(--text-primary); font-family: inherit;
+    outline: none;
+  }
+  select.status-sel:focus { border-color: var(--accent); }
+  .tl-item { display: flex; gap: 10px; margin-bottom: 12px; }
+  .tl-icon { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; color: var(--accent); }
+  .tl-action { font-size: 13px; }
+  .tl-time { font-size: 11px; color: var(--text-tertiary); margin-top: 2px; }
+
+  /* ── FORMS ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); }
+  .form-control {
+    padding: 8px 12px; border: 1px solid var(--border);
+    border-radius: var(--radius-md); font-size: 13px;
+    font-family: inherit; background: var(--bg-primary);
+    color: var(--text-primary); outline: none; width: 100%;
+    transition: border-color .14s;
+  }
+  .form-control:focus { border-color: var(--accent); }
+  textarea.form-control { resize: vertical; }
+
+  /* ── REPORTS ── */
+  .bar-row { margin-bottom: 12px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; color: var(--text-secondary); }
+  .bar-track { background: var(--border); border-radius: 4px; height: 7px; }
+  .bar-fill { height: 100%; border-radius: 4px; background: var(--accent); transition: width .4s ease; }
+  .breakdown-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .breakdown-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* ── EMPTY STATE ── */
+  .empty { text-align: center; padding: 48px 20px; color: var(--text-tertiary); }
+  .empty i { font-size: 40px; display: block; margin-bottom: 10px; opacity: .4; }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 999;
+    background: #111827; color: #fff;
+    padding: 10px 18px; border-radius: var(--radius-md);
+    font-size: 13px; font-weight: 500;
+    box-shadow: var(--shadow-md);
+    opacity: 0; transform: translateY(6px);
+    transition: all .2s ease; pointer-events: none;
+  }
+  #toast.show { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark"><i class="ti ti-chart-dots-3"></i></div>
+      <span class="logo-text">LeadFlow CRM</span>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Main</div>
+      <div class="nav-item active" onclick="showView('dashboard')">
+        <i class="ti ti-layout-dashboard"></i> Dashboard
+      </div>
+      <div class="nav-item" onclick="showView('leads')">
+        <i class="ti ti-users"></i> All Leads
+        <span class="nav-badge" id="total-badge">0</span>
+      </div>
+      <div class="nav-item" onclick="showView('pipeline')">
+        <i class="ti ti-columns"></i> Pipeline
+      </div>
+      <div class="nav-section">Manage</div>
+      <div class="nav-item" onclick="showView('contacts')">
+        <i class="ti ti-address-book"></i> Contacts
+      </div>
+      <div class="nav-item" onclick="showView('reports')">
+        <i class="ti ti-chart-bar"></i> Reports
+      </div>
+      <div class="nav-item" onclick="showView('settings')">
+        <i class="ti ti-settings"></i> Settings
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-row">
+        <div class="avatar">AK</div>
+        <div class="user-info">
+          <div class="user-name">Alex Kumar</div>
+          <div class="user-role">Sales Manager</div>
+        </div>
+        <i class="ti ti-dots-vertical" style="font-size:16px;color:var(--text-tertiary)"></i>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+    <header class="topbar">
+      <span class="page-title" id="page-title">Dashboard</span>
+      <div class="search-wrap">
+        <i class="ti ti-search"></i>
+        <input type="text" id="search-input" placeholder="Search leads…" oninput="handleSearch()">
+      </div>
+      <button class="btn btn-secondary" onclick="exportCSV()"><i class="ti ti-download"></i> Export CSV</button>
+      <button class="btn btn-primary" onclick="openAddModal()"><i class="ti ti-plus"></i> Add Lead</button>
+    </header>
+
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div id="view-dashboard" class="view active">
+        <div class="stats-grid" id="stats-grid"></div>
+        <div class="panels">
+          <div class="panel">
+            <div class="panel-header">
+              <span class="panel-title">Recent Leads</span>
+              <button class="panel-link" onclick="showView('leads')">View all →</button>
+            </div>
+            <table class="data-table" id="recent-table"></table>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><span class="panel-title">Activity Feed</span></div>
+            <div id="activity-feed"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ALL LEADS -->
+      <div id="view-leads" class="view">
+        <div class="filter-row" id="filter-row"></div>
+        <div class="panel">
+          <table class="data-table" id="all-table"></table>
+        </div>
+      </div>
+
+      <!-- PIPELINE -->
+      <div id="view-pipeline" class="view">
+        <div class="kanban" id="kanban"></div>
+      </div>
+
+      <!-- CONTACTS -->
+      <div id="view-contacts" class="view">
+        <div class="panel">
+          <div class="panel-header"><span class="panel-title">All Contacts</span></div>
+          <table class="data-table" id="contacts-table"></table>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div id="view-reports" class="view">
+        <div class="stats-grid" id="report-stats"></div>
+        <div class="panels">
+          <div class="panel" style="padding:20px">
+            <div class="panel-title" style="margin-bottom:16px">Leads by Source</div>
+            <div id="source-chart"></div>
+          </div>
+          <div class="panel" style="padding:20px">
+            <div class="panel-title" style="margin-bottom:16px">Status Breakdown</div>
+            <div id="status-chart"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div id="view-settings" class="view">
+        <div class="panel" style="max-width:480px;padding:24px">
+          <div class="panel-title" style="margin-bottom:18px">CRM Settings</div>
+          <div style="display:flex;flex-direction:column;gap:0">
+            <label style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:13.5px">
+              Email notifications for new leads <input type="checkbox" checked style="width:16px;height:16px;accent-color:var(--accent)">
+            </label>
+            <label style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:13.5px">
+              Auto-assign leads to team <input type="checkbox" style="width:16px;height:16px;accent-color:var(--accent)">
+            </label>
+            <label style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--border);cursor:pointer;font-size:13.5px">
+              Lead scoring enabled <input type="checkbox" checked style="width:16px;height:16px;accent-color:var(--accent)">
+            </label>
+            <label style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;cursor:pointer;font-size:13.5px">
+              Weekly email digest <input type="checkbox" style="width:16px;height:16px;accent-color:var(--accent)">
+            </label>
+          </div>
+          <button class="btn btn-primary" style="margin-top:18px" onclick="toast('Settings saved!')">Save Settings</button>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </main>
+</div><!-- /app -->
+
+<!-- ── LEAD DETAIL DRAWER ── -->
+<div class="overlay" id="detail-overlay" onclick="if(event.target===this)closeDetail()">
+  <div class="drawer">
+    <div class="drawer-header">
+      <i class="ti ti-user" style="font-size:20px;color:var(--accent)"></i>
+      <span class="drawer-title">Lead Details</span>
+      <button class="close-btn" onclick="closeDetail()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="drawer-body" id="detail-body"></div>
+    <div class="drawer-footer" id="detail-footer"></div>
+  </div>
+</div>
+
+<!-- ── ADD LEAD MODAL ── -->
+<div class="overlay center" id="add-overlay" onclick="if(event.target===this)closeAddModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <i class="ti ti-user-plus" style="font-size:20px;color:var(--accent)"></i>
+      <span class="modal-title">Add New Lead</span>
+      <button class="close-btn" onclick="closeAddModal()"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-grid">
+        <div class="form-group"><label class="form-label">First Name *</label><input class="form-control" id="f-fname" placeholder="Jane"></div>
+        <div class="form-group"><label class="form-label">Last Name *</label><input class="form-control" id="f-lname" placeholder="Smith"></div>
+        <div class="form-group full"><label class="form-label">Email *</label><input class="form-control" id="f-email" type="email" placeholder="jane@company.com"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-control" id="f-phone" placeholder="+1 555 0100"></div>
+        <div class="form-group"><label class="form-label">Company</label><input class="form-control" id="f-company" placeholder="Acme Inc."></div>
+        <div class="form-group">
+          <label class="form-label">Source</label>
+          <select class="form-control" id="f-source">
+            <option>Contact Form</option><option>Live Chat</option><option>Newsletter</option>
+            <option>Referral</option><option>Social Media</option><option>Direct</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-control" id="f-status">
+            <option>New</option><option>Contacted</option><option>Qualified</option>
+            <option>Converted</option><option>Lost</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Deal Value ($)</label>
+          <input class="form-control" id="f-value" type="number" placeholder="5000">
+        </div>
+        <div class="form-group full"><label class="form-label">Their Message</label><textarea class="form-control" id="f-message" rows="3" placeholder="Contact form message…"></textarea></div>
+        <div class="form-group full"><label class="form-label">Internal Notes</label><textarea class="form-control" id="f-notes" rows="2" placeholder="Notes for the team…"></textarea></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="saveLead()"><i class="ti ti-check"></i> Save Lead</button>
+      <button class="btn btn-secondary" onclick="closeAddModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div id="toast"></div>
+
+<script>
+// ─────────────────────────────────────────
+//  DATA
+// ─────────────────────────────────────────
+const STATUSES = ['New','Contacted','Qualified','Converted','Lost'];
+const STATUS_CLS = {New:'badge-new',Contacted:'badge-contacted',Qualified:'badge-qualified',Converted:'badge-converted',Lost:'badge-lost'};
+const STATUS_COLORS = {New:'#1a56db',Contacted:'#d97706',Qualified:'#059669',Converted:'#7c3aed',Lost:'#dc2626'};
+const now = new Date();
+const ago = d => new Date(now - d * 864e5);
+const fmtDate = d => new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});
+const initials = n => n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+let leads = [
+  {id:1, name:'Sarah Johnson',   email:'sarah@techsolutions.io', phone:'+1 415 203 5511', company:'Tech Solutions', source:'Contact Form', status:'Qualified',  score:88, message:'We need a platform for managing our 50-person team. Budget approved for Q3.', notes:'Strong buying intent. Demo scheduled for next Monday.', date:ago(1),  value:12000},
+  {id:2, name:'Marcus Webb',     email:'marcus@growfast.co',     phone:'+1 312 555 0182', company:'GrowFast',       source:'Live Chat',    status:'Contacted',  score:62, message:'Looking for CRM integration help for our sales team.',                    notes:'Follow up next week.',                                                    date:ago(2),  value:4500},
+  {id:3, name:'Priya Nair',      email:'priya@nairinc.com',      phone:'+91 99876 54321', company:'Nair Inc.',      source:'Referral',     status:'New',        score:75, message:'Interested in your enterprise plan pricing and onboarding process.',     notes:'',                                                                        date:ago(0.2),value:8000},
+  {id:4, name:'Daniel Park',     email:'d.park@bluewave.com',    phone:'+1 206 888 0033', company:'BlueWave',       source:'Newsletter',   status:'Converted',  score:95, message:'Please onboard us — we have 200 users ready to migrate.',              notes:'Closed! Annual plan signed.',                                             date:ago(5),  value:24000},
+  {id:5, name:'Lena Fischer',    email:'l.fischer@brightco.de',  phone:'+49 30 5550 1234',company:'BrightCo',       source:'Contact Form', status:'Lost',       score:30, message:'Just exploring options, no immediate plans.',                           notes:'Not a fit — too early stage, revisit in 6 months.',                      date:ago(8),  value:0},
+  {id:6, name:'Omar Hassan',     email:'omar@nexgentech.io',     phone:'+971 50 123 4567',company:'NexGen Tech',    source:'Social Media', status:'New',        score:70, message:'Saw your LinkedIn post. Very interested in the enterprise solution!',  notes:'',                                                                        date:ago(0.05),value:6000},
+  {id:7, name:'Amy Chen',        email:'amy.chen@cloudinc.com',  phone:'+1 650 555 9900', company:'Cloud Inc.',     source:'Contact Form', status:'Contacted',  score:55, message:'Need onboarding support for our engineering team of 30.',              notes:'Sent intro deck on Tuesday.',                                             date:ago(3),  value:3200},
+  {id:8, name:'James Obi',       email:'james@databridge.ng',    phone:'+234 802 555 1234',company:'DataBridge',   source:'Direct',       status:'Qualified',  score:80, message:'Looking for a scalable lead management solution for our agency.',       notes:'Enterprise demo booked for Thursday.',                                    date:ago(2),  value:15000},
+  {id:9, name:'Fatima Al-Rashid',email:'fatima@alphasoft.ae',   phone:'+971 4 555 8822', company:'AlphaSoft',      source:'Referral',     status:'New',        score:68, message:'Our team of 15 needs a CRM that integrates with our existing tools.',  notes:'',                                                                        date:ago(0.5),value:5500},
+  {id:10,name:'Carlos Rivera',   email:'c.rivera@solartec.mx',  phone:'+52 55 1234 5678',company:'SolarTec',       source:'Newsletter',   status:'Contacted',  score:58, message:'Interested in automation features for our sales pipeline.',            notes:'Scheduled a call for next week.',                                         date:ago(4),  value:7000},
+];
+
+let nextId = 11;
+let activeFilter = 'All';
+
+let activities = [
+  {text:'Omar Hassan submitted a contact form',       time:'12 min ago', color:''},
+  {text:'Fatima Al-Rashid referred by existing client',time:'1 h ago',   color:''},
+  {text:'Daniel Park converted to customer!',         time:'2 h ago',    color:'green'},
+  {text:'Follow-up email sent to Marcus Webb',        time:'5 h ago',    color:'amber'},
+  {text:'Demo scheduled with James Obi',              time:'1 d ago',    color:''},
+  {text:'Lena Fischer marked as Lost',                time:'3 d ago',    color:'red'},
+];
+
+// ─────────────────────────────────────────
+//  HELPERS
+// ─────────────────────────────────────────
+function scoreClass(s) { return s>=75 ? 'score-high' : s>=45 ? 'score-mid' : 'score-low'; }
+function scoreLabel(s) { return s>=75 ? 'Hot' : s>=45 ? 'Warm' : 'Cold'; }
+
+function toast(msg, dur=2800) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), dur);
+}
+
+// ─────────────────────────────────────────
+//  TABLE HTML
+// ─────────────────────────────────────────
+function tableHTML(rows, limit) {
+  if (!rows.length) return `<tr><td colspan="6" style="padding:40px;text-align:center;color:var(--text-tertiary)"><i class="ti ti-mood-empty" style="font-size:28px;display:block;margin-bottom:8px;opacity:.4"></i>No leads found</td></tr>`;
+  const shown = limit ? rows.slice(0, limit) : rows;
+  const head = `<thead><tr>
+    <th>Name</th><th>Company</th><th>Source</th><th>Status</th><th>Score</th><th>Date</th>
+  </tr></thead>`;
+  const body = '<tbody>' + shown.map(l => `
+    <tr onclick="openDetail(${l.id})" style="cursor:pointer">
+      <td><div class="lead-name-cell">
+        <div class="avatar avatar-sm">${initials(l.name)}</div>${l.name}
+      </div></td>
+      <td style="color:var(--text-secondary)">${l.company||'—'}</td>
+      <td style="color:var(--text-secondary)">${l.source}</td>
+      <td><span class="badge ${STATUS_CLS[l.status]||'badge-new'}">${l.status}</span></td>
+      <td><div class="score-wrap">
+        <div class="score-bar ${scoreClass(l.score)}">
+          <div class="score-fill" style="width:${l.score}%"></div>
+        </div>
+        <span class="score-num">${l.score}</span>
+      </div></td>
+      <td style="color:var(--text-tertiary)">${fmtDate(l.date)}</td>
+    </tr>`).join('') + '</tbody>';
+  return head + body;
+}
+
+// ─────────────────────────────────────────
+//  DASHBOARD
+// ─────────────────────────────────────────
+function renderDashboard() {
+  const total   = leads.length;
+  const newLeads = leads.filter(l=>l.status==='New').length;
+  const conv    = leads.filter(l=>l.status==='Converted').length;
+  const revenue = leads.filter(l=>l.status==='Converted').reduce((a,b)=>a+b.value,0);
+  const rate    = total ? Math.round(conv/total*100) : 0;
+
+  document.getElementById('stats-grid').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#e8f0fe;color:#1a56db"><i class="ti ti-users"></i></div>
+      <div class="stat-label">Total Leads</div>
+      <div class="stat-val">${total}</div>
+      <div class="stat-sub stat-up">↑ 12% this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#fef3c7;color:#d97706"><i class="ti ti-bell-ringing"></i></div>
+      <div class="stat-label">New Leads</div>
+      <div class="stat-val">${newLeads}</div>
+      <div class="stat-sub">Awaiting contact</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#d1fae5;color:#059669"><i class="ti ti-trending-up"></i></div>
+      <div class="stat-label">Conversion Rate</div>
+      <div class="stat-val">${rate}%</div>
+      <div class="stat-sub stat-up">↑ 3 pts vs last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon" style="background:#ede9fe;color:#7c3aed"><i class="ti ti-currency-dollar"></i></div>
+      <div class="stat-label">Won Revenue</div>
+      <div class="stat-val">$${Math.round(revenue/1000)}k</div>
+      <div class="stat-sub">From converted leads</div>
+    </div>`;
+
+  const sorted = [...leads].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  document.getElementById('recent-table').innerHTML = tableHTML(sorted, 5);
+
+  document.getElementById('activity-feed').innerHTML = activities.slice(0,7).map(a=>`
+    <div class="activity-item">
+      <div class="activity-dot ${a.color}"></div>
+      <div>
+        <div class="activity-text">${a.text}</div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('total-badge').textContent = total;
+}
+
+// ─────────────────────────────────────────
+//  ALL LEADS
+// ─────────────────────────────────────────
+function renderFilters() {
+  const all = ['All', ...STATUSES];
+  document.getElementById('filter-row').innerHTML =
+    '<span class="filter-label">Filter:</span>' +
+    all.map(f => {
+      const cnt = f==='All' ? leads.length : leads.filter(l=>l.status===f).length;
+      const label = f==='All' ? 'All' : `${f} (${cnt})`;
+      return `<span class="chip${activeFilter===f?' active':''}" onclick="setFilter('${f}')">${label}</span>`;
+    }).join('');
+}
+
+function setFilter(f) {
+  activeFilter = f;
+  renderFilters();
+  renderAllLeads();
+}
+
+function renderAllLeads() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let rows = leads;
+  if (activeFilter !== 'All') rows = rows.filter(l=>l.status===activeFilter);
+  if (q) rows = rows.filter(l =>
+    l.name.toLowerCase().includes(q) ||
+    l.email.toLowerCase().includes(q) ||
+    (l.company||'').toLowerCase().includes(q) ||
+    l.source.toLowerCase().includes(q)
+  );
+  document.getElementById('all-table').innerHTML = tableHTML(rows);
+}
+
+function handleSearch() {
+  const v = document.getElementById('view-leads');
+  if (v && v.classList.contains('active')) renderAllLeads();
+  const c = document.getElementById('view-contacts');
+  if (c && c.classList.contains('active')) renderContacts();
+}
+
+// ─────────────────────────────────────────
+//  PIPELINE KANBAN
+// ─────────────────────────────────────────
+function renderKanban() {
+  document.getElementById('kanban').innerHTML = STATUSES.map(status => {
+    const col = leads.filter(l=>l.status===status);
+    return `<div class="kol">
+      <div class="kol-header">
+        <span>${status}</span>
+        <span class="kol-count">${col.length}</span>
+      </div>
+      ${col.length ? col.map(l=>`
+        <div class="kcard" onclick="openDetail(${l.id})">
+          <div class="kcard-name">${l.name}</div>
+          <div class="kcard-co">${l.company||'No company'}</div>
+          <div class="kcard-meta">
+            <i class="ti ti-link" style="font-size:11px"></i>${l.source}
+            <span class="kcard-score">${l.score}</span>
+          </div>
+        </div>`).join('') :
+        `<div style="padding:12px 8px;text-align:center;font-size:12px;color:var(--text-tertiary)">Empty</div>`}
+    </div>`;
+  }).join('');
+}
+
+// ─────────────────────────────────────────
+//  CONTACTS
+// ─────────────────────────────────────────
+function renderContacts() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let rows = [...leads].sort((a,b)=>a.name.localeCompare(b.name));
+  if (q) rows = rows.filter(l =>
+    l.name.toLowerCase().includes(q) ||
+    l.email.toLowerCase().includes(q) ||
+    (l.company||'').toLowerCase().includes(q)
+  );
+  document.getElementById('contacts-table').innerHTML = tableHTML(rows);
+}
+
+// ─────────────────────────────────────────
+//  REPORTS
+// ─────────────────────────────────────────
+function renderReports() {
+  const total  = leads.length || 1;
+  const conv   = leads.filter(l=>l.status==='Converted').length;
+  const revenue= leads.filter(l=>l.status==='Converted').reduce((a,b)=>a+b.value,0);
+  const pipeline=leads.reduce((a,b)=>a+b.value,0);
+  const avgScore=Math.round(leads.reduce((a,b)=>a+b.score,0)/total);
+
+  document.getElementById('report-stats').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total Pipeline</div>
+      <div class="stat-val">$${Math.round(pipeline/1000)}k</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Won Revenue</div>
+      <div class="stat-val">$${Math.round(revenue/1000)}k</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg Lead Score</div>
+      <div class="stat-val">${avgScore}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Win Rate</div>
+      <div class="stat-val">${Math.round(conv/total*100)}%</div>
+    </div>`;
+
+  const srcMap = {};
+  leads.forEach(l => srcMap[l.source] = (srcMap[l.source]||0)+1);
+  document.getElementById('source-chart').innerHTML =
+    Object.entries(srcMap).sort((a,b)=>b[1]-a[1]).map(([src,cnt])=>`
+      <div class="bar-row">
+        <div class="bar-label"><span>${src}</span><span>${cnt}</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.round(cnt/total*100)}%"></div></div>
+      </div>`).join('');
+
+  document.getElementById('status-chart').innerHTML =
+    STATUSES.map(s => {
+      const cnt = leads.filter(l=>l.status===s).length;
+      return `<div class="breakdown-row">
+        <div class="breakdown-dot" style="background:${STATUS_COLORS[s]}"></div>
+        <span style="font-size:13px;flex:1">${s}</span>
+        <div class="bar-track" style="width:120px"><div class="bar-fill" style="width:${Math.round(cnt/total*100)}%;background:${STATUS_COLORS[s]}"></div></div>
+        <span style="font-size:12px;color:var(--text-tertiary);min-width:22px;text-align:right">${cnt}</span>
+      </div>`;
+    }).join('');
+}
+
+// ─────────────────────────────────────────
+//  DETAIL DRAWER
+// ─────────────────────────────────────────
+function openDetail(id) {
+  const l = leads.find(x=>x.id===id);
+  if (!l) return;
+
+  document.getElementById('detail-body').innerHTML = `
+    <div class="detail-hero">
+      <div class="detail-avatar">${initials(l.name)}</div>
+      <div>
+        <div class="detail-name">${l.name}</div>
+        <div class="detail-co">${l.company||'No company'} · ${l.source}</div>
+        <div style="margin-top:7px"><span class="badge ${STATUS_CLS[l.status]}">${l.status}</span></div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-label">Contact Info</div>
+      <div class="field-grid">
+        <div class="field-item">
+          <div class="field-label">Email</div>
+          <div class="field-val"><a href="mailto:${l.email}">${l.email}</a></div>
+        </div>
+        <div class="field-item">
+          <div class="field-label">Phone</div>
+          <div class="field-val">${l.phone||'—'}</div>
+        </div>
+        <div class="field-item">
+          <div class="field-label">Company</div>
+          <div class="field-val">${l.company||'—'}</div>
+        </div>
+        <div class="field-item">
+          <div class="field-label">Date Added</div>
+          <div class="field-val">${fmtDate(l.date)}</div>
+        </div>
+        <div class="field-item">
+          <div class="field-label">Deal Value</div>
+          <div class="field-val">${l.value ? '$'+l.value.toLocaleString() : '—'}</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-label">Lead Score</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="font-size:30px;font-weight:700;color:var(--accent)">${l.score}</div>
+        <div>
+          <div class="score-wrap">
+            <div class="score-bar ${scoreClass(l.score)}" style="width:120px;height:8px">
+              <div class="score-fill" style="width:${l.score}%"></div>
+            </div>
+          </div>
+          <div style="font-size:12px;color:var(--text-tertiary);margin-top:3px">${scoreLabel(l.score)} lead</div>
+        </div>
+      </div>
+    </div>
+
+    ${l.message ? `
+    <div class="detail-section">
+      <div class="section-label">Their Message</div>
+      <div class="msg-box">${l.message}</div>
+    </div>` : ''}
+
+    <div class="detail-section">
+      <div class="section-label">Change Status</div>
+      <select class="status-sel" onchange="updateStatus(${l.id}, this.value)">
+        ${STATUSES.map(s=>`<option${s===l.status?' selected':''}>${s}</option>`).join('')}
+      </select>
+    </div>
+
+    <div class="detail-section">
+      <div class="section-label">Notes</div>
+      <textarea class="form-control" rows="3" placeholder="Internal notes…" oninput="updateNotes(${l.id}, this.value)">${l.notes||''}</textarea>
+    </div>
+
+    <div>
+      <div class="section-label" style="margin-bottom:10px">Timeline</div>
+      <div class="tl-item">
+        <div class="tl-icon"><i class="ti ti-user-plus"></i></div>
+        <div>
+          <div class="tl-action">Lead created via ${l.source}</div>
+          <div class="tl-time">${fmtDate(l.date)}</div>
+        </div>
+      </div>
+      ${l.status!=='New' ? `
+      <div class="tl-item">
+        <div class="tl-icon" style="background:#fef3c7;color:#92400e"><i class="ti ti-refresh"></i></div>
+        <div>
+          <div class="tl-action">Status updated to <strong>${l.status}</strong></div>
+          <div class="tl-time">Recently</div>
+        </div>
+      </div>` : ''}
+    </div>`;
+
+  document.getElementById('detail-footer').innerHTML = `
+    <a href="mailto:${l.email}" class="btn btn-primary"><i class="ti ti-mail"></i> Email Lead</a>
+    <button class="btn btn-secondary" onclick="closeDetail()">Close</button>
+    <button class="btn btn-danger" onclick="deleteLead(${l.id})"><i class="ti ti-trash"></i> Delete</button>`;
+
+  document.getElementById('detail-overlay').classList.add('open');
+}
+
+function closeDetail() {
+  document.getElementById('detail-overlay').classList.remove('open');
+  renderAll();
+}
+
+function updateStatus(id, status) {
+  const l = leads.find(x=>x.id===id);
+  if (!l) return;
+  l.status = status;
+  activities.unshift({
+    text: `${l.name} status changed to ${status}`,
+    time: 'Just now',
+    color: status==='Converted'?'green':status==='Lost'?'red':'amber'
+  });
+  toast(`Status updated to "${status}"`);
+}
+
+function updateNotes(id, notes) {
+  const l = leads.find(x=>x.id===id);
+  if (l) l.notes = notes;
+}
+
+function deleteLead(id) {
+  leads = leads.filter(x=>x.id!==id);
+  closeDetail();
+  toast('Lead deleted.');
+}
+
+// ─────────────────────────────────────────
+//  ADD LEAD
+// ─────────────────────────────────────────
+function openAddModal()  { document.getElementById('add-overlay').classList.add('open'); }
+function closeAddModal() { document.getElementById('add-overlay').classList.remove('open'); }
+
+function saveLead() {
+  const fn = document.getElementById('f-fname').value.trim();
+  const ln = document.getElementById('f-lname').value.trim();
+  const em = document.getElementById('f-email').value.trim();
+  if (!fn || !ln) { alert('First and last name are required.'); return; }
+  if (!em || !em.includes('@')) { alert('A valid email is required.'); return; }
+
+  const newLead = {
+    id: nextId++,
+    name: fn + ' ' + ln,
+    email: em,
+    phone: document.getElementById('f-phone').value.trim(),
+    company: document.getElementById('f-company').value.trim(),
+    source: document.getElementById('f-source').value,
+    status: document.getElementById('f-status').value,
+    score: Math.floor(Math.random()*35)+50,
+    message: document.getElementById('f-message').value.trim(),
+    notes: document.getElementById('f-notes').value.trim(),
+    date: new Date(),
+    value: parseInt(document.getElementById('f-value').value)||0,
+  };
+
+  leads.unshift(newLead);
+  activities.unshift({
+    text: `New lead added: ${newLead.name} via ${newLead.source}`,
+    time: 'Just now', color: ''
+  });
+
+  ['f-fname','f-lname','f-email','f-phone','f-company','f-message','f-notes','f-value']
+    .forEach(id => document.getElementById(id).value = '');
+
+  closeAddModal();
+  renderAll();
+  toast('Lead saved successfully!');
+}
+
+// ─────────────────────────────────────────
+//  EXPORT CSV
+// ─────────────────────────────────────────
+function exportCSV() {
+  const header = ['Name','Email','Phone','Company','Source','Status','Score','Deal Value','Date'];
+  const rows = leads.map(l => [
+    l.name, l.email, l.phone||'', l.company||'',
+    l.source, l.status, l.score, l.value, fmtDate(l.date)
+  ]);
+  const csv = [header, ...rows].map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+  a.download = 'leadflow-export.csv';
+  a.click();
+  toast('CSV exported!');
+}
+
+// ─────────────────────────────────────────
+//  VIEW ROUTING
+// ─────────────────────────────────────────
+const VIEW_TITLES = {
+  dashboard:'Dashboard', leads:'All Leads', pipeline:'Pipeline',
+  contacts:'Contacts', reports:'Reports', settings:'Settings'
+};
+const NAV_ORDER = ['dashboard','leads','pipeline','contacts','reports','settings'];
+
+function showView(v) {
+  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  document.querySelectorAll('.nav-item')[NAV_ORDER.indexOf(v)].classList.add('active');
+  document.getElementById('page-title').textContent = VIEW_TITLES[v];
+
+  if (v==='leads')    { renderFilters(); renderAllLeads(); }
+  if (v==='pipeline') renderKanban();
+  if (v==='contacts') renderContacts();
+  if (v==='reports')  renderReports();
+}
+
+function renderAll() {
+  renderDashboard();
+  const active = document.querySelector('.view.active');
+  if (!active) return;
+  const id = active.id.replace('view-','');
+  if (id==='leads')    { renderFilters(); renderAllLeads(); }
+  if (id==='pipeline') renderKanban();
+  if (id==='contacts') renderContacts();
+  if (id==='reports')  renderReports();
+}
+
+// ─────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────
+renderAll();
+</script>
+</body>
+</html>
