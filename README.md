@@ -1,4 +1,4 @@
-##🚀 LeadFlow CRM Dashboard
+🚀 LeadFlow CRM Dashboard
 
 LeadFlow CRM is a modern and responsive Customer Relationship Management (CRM) web application designed to help businesses efficiently manage leads, customer interactions, sales pipelines, and business activities through an intuitive dashboard interface.
 
@@ -6,7 +6,7 @@ LeadFlow CRM is a modern and responsive Customer Relationship Management (CRM) w
 
 This project was developed to simulate a real-world CRM platform with a clean interface and user-friendly experience for managing customer relationships and sales operations.
 
-#Live Demo :- https://yuvaraju-hacker.github.io/FUTURE_FS_02/
+Live Demo :- https://yuvaraju-hacker.github.io/FUTURE_FS_02/
 
 ✨ Features
 
